@@ -8,18 +8,18 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member {
+public class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String email;
+    private String username;
 
     private String password;
     @Enumerated(value = EnumType.STRING)
-    private Authority authority;
+    private Role role;
     @Builder
-    public Member(String email ,String password, Authority authority) {
-        this.email = email;
+    public User(String username, String password, Role role) {
+        this.username = username;
         this.password = password;
-        this.authority = authority;
+        this.role = role;
     }
 }
