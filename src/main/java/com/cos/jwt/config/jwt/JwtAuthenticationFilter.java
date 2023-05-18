@@ -1,5 +1,7 @@
 package com.cos.jwt.config.jwt;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.cos.jwt.config.auth.PrincipalDetails;
 import com.cos.jwt.domain.User;
 import com.cos.jwt.dto.LoginRequestDto;
@@ -17,6 +19,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * 스프링 시큐리티에서 UsernamePasswordAuthenticationFilter 가 있어
@@ -71,6 +74,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         log.info("Process successfulAuthentication(): It means successfully authenticated");
-        super.successfulAuthentication(request, response, chain, authResult);
+        PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
+        //RSA 방식 아니고 Hash 암호화 방식
+        String jwtToken = JWT.create()
+                .withSubject(principalDetails.getUser().getUsername())
+                .withExpiresAt(new Date(System.currentTimeMillis()+(60000*10))) //10 min
+                .withClaim("id",principalDetails.getUser().getId())  //claim: payload
+                .withClaim("username",principalDetails.getUser().getUsername())
+                .sign(Algorithm.HMAC512("cos"));
+
+        response.addHeader("Authorization","Bearer "+jwtToken);
     }
 }
