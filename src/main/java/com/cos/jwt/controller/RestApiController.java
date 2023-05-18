@@ -36,4 +36,19 @@ public class RestApiController {
       return "Successfully Signup!";
     }
 
+    @GetMapping("user")
+    public String user(){
+        return "user";
+    }
+
+    @GetMapping("manager")
+    public String manager(){
+        return "manager";
+    }
+
+    @GetMapping("admin")
+    public String admin(){
+        return "admin";
+    }
+
 }
